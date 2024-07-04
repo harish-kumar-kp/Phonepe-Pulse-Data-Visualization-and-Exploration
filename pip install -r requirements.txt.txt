@@ -1,0 +1,8 @@
+pip install os-sys
+pip install python-git
+pip install pypi-json
+pip installmysql-connector-python
+pip install pandas
+pip install regex
+pip install streamlit
+pip install plotly-express
