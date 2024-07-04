@@ -28,7 +28,6 @@ def createDirectory(workpath):
         st.write(f':red[Repository Cloned at location: {local_path}]') 
     return localPath
 
-
 db = mysql.connector.connect(
 host ="localhost",
 user = "root",
@@ -600,8 +599,7 @@ with st.sidebar:
             dumTopUser(top_user_StatesPath)
 
             db.commit()
-            
-            dbStoreStatus = 1
+
         else:
             st.write(":red[Already Cleaned and Stored]") 
             pass     
@@ -630,6 +628,7 @@ else:#
     placeholder="Select Your Query Here ...",
     )
 
+    #creating Columns
     col1 ,col2,col3,col4,col5  = st.columns(5 ,gap="small")
     with col1:
             if querySelected == "10.Which State's Disctrict was in Top in the Insurance Amount For All the 9 Quarters now and in past?":
@@ -662,16 +661,12 @@ else:#
     with col3:
             if querySelected == "10.Which State's Disctrict was in Top in the Insurance Amount For All the 9 Quarters now and in past?":
                 st.write("")
-            elif querySelected == "1. What is the Aggragate Transaction Count for selected Transaction type of all States for Selected Year and its Quarter?"  :
+            elif querySelected == "1. What is the Aggragate Transaction Count for selected Transaction type of all States for Selected Year and its Quarter?" or querySelected == "2. What is the Aggragate Transaction Amount for selected Transaction type of all States for Selected Year and its Quarter?":  
                     transactionSelected = st.selectbox("",#:green[**Select Transaction Type**] :point_down: 
                                                        ("Recharge & bill payments", "Peer-to-peer payments", 
                                                         "Merchant payments","Financial Services","Others",),
                                                         placeholder="Select Quarter Here ...",)
-            elif querySelected == "2. What is the Aggragate Transaction Amount for selected Transaction type of all States for Selected Year and its Quarter?"  :
-                    transactionSelected = st.selectbox("",#:green[**Select Transaction Type**] :point_down: 
-                                                       ("Recharge & bill payments", "Peer-to-peer payments", 
-                                                        "Merchant payments","Financial Services","Others",),
-                                                        placeholder="Select Quarter Here ...",)
+
             elif querySelected == "3. What is the UserCount or Percentage of Specific Brand Phone Users in all the states for Selected Year and its Quarter?"  :
                     brandSelected = st.selectbox("",#:green[**Select Device Brand**] :point_down: 
                                                        ("Apple", "Samsung","Motorola",  "Lenovo","Asus","Huawei","OnePlus",
@@ -690,6 +685,7 @@ else:#
     with col5:
         st.write("")
 
+    #Checking The Query
     if querySelected == "1. What is the Aggragate Transaction Count for selected Transaction type of all States for Selected Year and its Quarter?":
         x =1
         sql = "SELECT State ,Year,Quarter,Transaction_type,Transaction_count FROM agg_transaction WHERE (Year, Quarter,Transaction_type) = ("+yearSelected+","+quarterSelected[-1]+",'"+transactionSelected+"' ) ORDER BY Transaction_count DESC" 
@@ -698,32 +694,25 @@ else:#
         sql = "SELECT State ,Year,Quarter,Transaction_type,Transaction_amount FROM agg_transaction WHERE (Year, Quarter,Transaction_type) = ("+yearSelected+","+quarterSelected[-1]+",'"+transactionSelected+"' ) ORDER BY Transaction_amount DESC"
     elif querySelected == "3. What is the UserCount or Percentage of Specific Brand Phone Users in all the states for Selected Year and its Quarter?":
         x =3
-        sql = "SELECT State ,Year,Quarter,Brands,"+deviceDetailSelected+" FROM agg_user WHERE (Year, Quarter , Brands) = ("+yearSelected+","+quarterSelected[-1]+" ,'"+brandSelected+"') ORDER BY "+deviceDetailSelected+" DESC"
-        
+        sql = "SELECT State ,Year,Quarter,Brands,"+deviceDetailSelected+" FROM agg_user WHERE (Year, Quarter , Brands) = ("+yearSelected+","+quarterSelected[-1]+" ,'"+brandSelected+"') ORDER BY "+deviceDetailSelected+" DESC"    
     elif querySelected == "4. What are the top 5 Districts in Transaction Amount and their Corrosponding States for Selected Year and its Quarter?":
         x =4
-        #sql = "SELECT State ,Year,Quarter,SUM(Transaction_amount ) AS Total_Transaction_Amount  FROM map_transaction  WHERE (Year, Quarter ) = ("+yearSelected+","+quarterSelected[-1]+")  GROUP BY State ORDER BY Total_Transaction_Amount DESC LIMIT 10 "
         sql = "SELECT State,Year,Quarter,District,Transaction_amount FROM map_transaction  WHERE (Year, Quarter ) = ("+yearSelected+","+quarterSelected[-1]+")  ORDER BY Transaction_amount DESC LIMIT 5"
     elif querySelected == "5. What is the Top RegisterdUsers Districts of all State for Selected Year and its Quarter?":
         x =5
         sql = "SELECT State ,Year,Quarter,District, RegisteredUsers  FROM map_User  WHERE (Year, Quarter ) = ("+yearSelected+","+quarterSelected[-1]+" )  ORDER BY RegisteredUsers DESC LIMIT 10" #,District 
-        #sql = "SELECT State ,Year,Quarter ,SUM(RegisteredUsers ) AS TotalRegisteredUsers FROM map_User  WHERE (Year, Quarter ) = (2024 , 1 )  GROUP BY State ORDER BY TotalRegisteredUsers DESC LIMIT 10"
     elif querySelected == "6. What are the Top 5 Districts in AppOpen Count and their Corrosponding States for Selected Year and its Quarter?":
         x =6
-        #sql = "SELECT State ,Year,Quarter,District,Transaction_amount FROM top_transaction WHERE (Year, Quarter) = ("+yearSelected+","+quarterSelected[-1]+") ORDER BY Transaction_amount DESC limit 3"
         sql = "SELECT State ,Year,Quarter,District,AppOpens as AppOpenCount  FROM map_User  WHERE (Year, Quarter ) = ("+yearSelected+","+quarterSelected[-1]+" )  ORDER BY AppOpenCount DESC LIMIT 5"
     elif querySelected == "7. What is the Total Count of State's District? List Maximum on First for Selected Year and its Quarter":
         x =7
-        sql = "SELECT State ,Year,Quarter,COUNT(District) AS DistrictCount FROM map_transaction  WHERE (Year, Quarter ) = ("+yearSelected+","+quarterSelected[-1]+")  GROUP BY State ORDER BY DistrictCount DESC"
-        
+        sql = "SELECT State ,Year,Quarter,COUNT(District) AS DistrictCount FROM map_transaction  WHERE (Year, Quarter ) = ("+yearSelected+","+quarterSelected[-1]+")  GROUP BY State ORDER BY DistrictCount DESC"   
     elif querySelected == "8. Which State has Highest Insurace Count for Selected Year and its Quarter?":
         x =8  
-        sql = "SELECT State ,Year,Quarter,Insurance_count FROM agg_insurance  WHERE (Year, Quarter ) = ("+yearSelected+","+quarterSelected[-1]+") ORDER BY Insurance_count DESC"
-        
+        sql = "SELECT State ,Year,Quarter,Insurance_count FROM agg_insurance  WHERE (Year, Quarter ) = ("+yearSelected+","+quarterSelected[-1]+") ORDER BY Insurance_count DESC"    
     elif querySelected == "9. Which State has Highest Insurace Amount for Selected Year and its Quarter?":
         x =9
-        sql = "SELECT State ,Year,Quarter,Insurance_amount FROM agg_insurance  WHERE (Year, Quarter ) = ("+yearSelected+","+quarterSelected[-1]+" ) ORDER BY Insurance_amount DESC"
-        
+        sql = "SELECT State ,Year,Quarter,Insurance_amount FROM agg_insurance  WHERE (Year, Quarter ) = ("+yearSelected+","+quarterSelected[-1]+" ) ORDER BY Insurance_amount DESC"    
     elif querySelected == "10.Which State's Disctrict was in Top in the Insurance Amount For All the 9 Quarters now and in past?":
         x=10
         sql = "SELECT State ,Year, Quarter ,District, Insurance_amount  FROM top_insurance  ORDER BY Insurance_amount DESC LIMIT 9"
@@ -731,6 +720,7 @@ else:#
     mycursor.execute(sql)
     myresult = mycursor.fetchall()
 
+    #creating Columns
     col1 ,col2  = st.columns(2,gap="small")
     with col1:
             if x==1:
@@ -835,11 +825,8 @@ else:#
                     pass
 
             st.plotly_chart(fig, theme="streamlit", use_container_width=False)
-
-
-               
-    with col2:
         
+    with col2:
         mapFig = px.choropleth(
             dfCol2,
             geojson="https://gist.githubusercontent.com/jbrobst/56c13bbbf9d97d187fea01ca62ea5112/raw/e388c4cae20aa53cb5090210a42ebb9b765c0a36/india_states.geojson",
@@ -851,7 +838,6 @@ else:#
         )
 
         mapFig.update_geos(fitbounds="locations", visible=True)
-        #fig.show()
         st.plotly_chart(mapFig,title = colTitle , use_container_width=True)
     col1 ,col2  = st.columns(2)
     with col1:
@@ -864,8 +850,9 @@ else:#
 
     #=========================================================================================== Custom Query Creator===================================================    
     #reading Database to get value for select box
-    AllStateList=["All"]
-    AllDistrictsList=["All"]
+    AllStateList = ["All"]
+    AllDistrictsList = ["All"]
+    AllBrandList = ["All"]
 
     mycursor.execute("SELECT * from top_insurance")
     myCusResult = mycursor.fetchall()
@@ -879,14 +866,25 @@ else:#
     AllDistrictsList.extend(distLst)
     DistrictTuple = tuple(AllDistrictsList)
 
+    mycursor.execute("SELECT * from agg_user")
+    myCusResult = mycursor.fetchall()
+    cus_selBrand_df = pd.DataFrame(myCusResult ,columns = mycursor.column_names )
+
+    brandLst=cus_selBrand_df['Brands'].unique()
+    AllBrandList.extend(brandLst)
+    BrandsTuple = tuple(AllBrandList)
+
     st.divider()
     st.divider()
     st.subheader(":grey[Customized Data Exploration]")
     
-    whereState=0
+    
+
     cusStateSelected=cusYearSelected=cusQuarterSelected=tableColumnVar=cusColumnSelected=cusBrandSelected=cusTransactionTypeSelected=cusDistrictSelected=whereBrand=stateWhere=yearWhere=quarterWhere=brandWhere=""
     cusDistrictLst=["All","Recharge & bill payments", "Peer-to-peer payments","Merchant payments","Financial Services","Others"]
     cusDistrictLstTup=tuple(cusDistrictLst)
+
+    #creating Columns
     col1 ,col2,col3 ,col4  = st.columns(4)
     with col1:
         cusTableSelected = st.selectbox(":red[Select Table]",("Aggregated Insurance", "Aggregated Transaction", "Aggregated User","Map Insurance", "Map Transaction", "Map User","Top Insurance","Top Transaction","Top User"),placeholder="Select Your Query Here ...",)
@@ -915,7 +913,7 @@ else:#
     with col5:
         if cusModeSelected=="Selective Data":
             if cusTableSelected =="Aggregated User":
-                cusBrandSelected = st.selectbox(":blue[Select Device Brand]",("All","Apple", "Samsung","Motorola",  "Lenovo","Asus","Huawei","OnePlus", "Oppo","Vivo","Realme","Gionee","Infinix","Tecno","Others",),placeholder="Select Quarter Here ...",)  
+                cusBrandSelected = st.selectbox(":blue[Select Device Brand]",BrandsTuple,placeholder="Select Quarter Here ...",)  
             elif cusTableSelected =="Aggregated Transaction" or cusTableSelected =="Map Transaction":
                 cusTransactionTypeSelected = st.selectbox(":blue[Select Trasaction Type]",("All","Recharge & bill payments", "Peer-to-peer payments","Merchant payments","Financial Services","Others",),placeholder="Select Quarter Here ...",)  
             elif cusTableSelected =="Map Insurance" or cusTableSelected =="Map User" or cusTableSelected =="Top Insurance" or cusTableSelected =="Top Transaction" or cusTableSelected =="Top User":                   
@@ -1017,9 +1015,12 @@ else:#
                 tableColumnVar = ",District"
             elif cusColumnSelected=="RegisteredUsers":
                 tableColumnVar=",RegisteredUsers" 
-         
 
+    # Variable Initilizaion     
     where=and1=and2=and3=""
+    whereMatrix=[0,0,0,0]
+    whereCount=0 # Multiples of enabled columns
+
 
     if cusModeSelected=="All Data":
         whereBlock=""
@@ -1047,6 +1048,7 @@ else:#
         else:
             quarterWhere ="Quarter="+cusQuarterSelected[-1]+" "
             whereQ=9
+
         if cusTableSelected=="Aggregated User":
             if cusBrandSelected =="All":
                 brandWhere =""
@@ -1054,6 +1056,7 @@ else:#
             else:
                 brandWhere ="Brands='"+cusBrandSelected+"'"
                 whereB=12
+
         elif cusTableSelected=="Aggregated Transaction" or cusTableSelected=="Map Transaction":
             if cusTransactionTypeSelected =="All":
                 brandWhere =""
@@ -1071,50 +1074,45 @@ else:#
         else:
             whereB=1
 
-        whereState = int(whereS*whereY*whereQ*whereB)
-        if whereState == 1:
-            where=""
-            and1=""
-            and2=""
-            and3=""
-        elif whereState == 3 or whereState == 6 or whereState == 9 or whereState == 12:
-            where=" WHERE "
-            and1=""
-            and2=""
-            and3=""
-        elif whereState == 18 or whereState == 27 or whereState == 36:
-            where=" WHERE "
-            and1=" AND "
-            and2=""
-            and3=""
-        elif whereState == 54 or whereState == 72 : 
-            where=" WHERE "
-            and1=""
-            and2=" AND "
-            and3=""
-        elif whereState == 108 :
-            where=" WHERE "
-            and1=""
-            and2=""
-            and3=" AND "
-        elif whereState == 162 :
-            where=" WHERE "
-            and1=" AND "
-            and2=" AND "
-            and3=""
-        elif whereState == 648 :
-            where=" WHERE "
-            and1=""
-            and2=" AND "
-            and3=" AND "
-        elif whereState == 1944 :
-            where=" WHERE "
-            and1=" AND "
-            and2=" AND "
-            and3=" AND "
-    whereBlock=where+stateWhere+and1+yearWhere+and2+quarterWhere+and3+brandWhere
+        whereCount = int(whereS*whereY*whereQ*whereB) # Multiples of enabled columns to identify which one is enabled
+        if whereCount == 1:
+            whereMatrix=[0,0,0,0]
+        elif whereCount == 3 or whereCount == 6 or whereCount == 9 or whereCount == 12:
+            whereMatrix=[1,0,0,0]
+        elif whereCount == 18 or whereCount == 27 or whereCount == 36:
+            whereMatrix=[1,1,0,0]
+        elif whereCount == 54 or whereCount == 72 : 
+            whereMatrix=[1,0,1,0]
+        elif whereCount == 108 :
+            whereMatrix=[1,0,0,1]
+        elif whereCount == 162 :
+            whereMatrix=[1,1,1,0]
+        elif whereCount == 216 :
+            whereMatrix=[1,1,0,1]
+        elif whereCount == 648 :
+            whereMatrix=[1,0,1,1]
+        elif whereCount == 1944 :
+            whereMatrix=[1,1,1,1]
+            
+    def whereValMat(wMatrix):
+        if wMatrix[0]==0:
+            val=""
+        else:
+            val=" WHERE "
+        return val
+    
+    def andValMat(wMatrix,andVal):
+        if wMatrix[andVal]==0:
+            val=""
+        else:
+            val=" AND "
+        return val
+    
+    whereBlock=whereValMat(whereMatrix)+stateWhere+andValMat(whereMatrix,1)+yearWhere+andValMat(whereMatrix,2)+quarterWhere+andValMat(whereMatrix,3)+brandWhere # constructed string for were clause in SQL
 
+    #SQL Query Generation
     cusSql="SELECT "+columnVar+" FROM "+selTable+ whereBlock 
+
     st.divider() 
     mycursor.execute(cusSql)
     myCusResult = mycursor.fetchall()
@@ -1152,7 +1150,6 @@ else:#
             )
 
             cusMapFig.update_geos(fitbounds="locations", visible=True)
-            #fig.show()
             st.plotly_chart(cusMapFig,title = colTitle , use_container_width=True)
                 
         with col2:
@@ -1176,7 +1173,7 @@ else:#
             st.plotly_chart(cusChartFig,title = colTitle , use_container_width=True)
 
     except:
-        st.write(":red[If the map and chart disappear , Please select other option except 'All' in the 'Select Column' Dropdown Menu]")    
+        st.write(":red[If the map and chart disappear , Please select other option except 'All' in the 'Select Column' Dropdown Menu and Dont select the parameters that is absent in the Table like 'District','Transaction','Brands',etc,.]")    
     st.dataframe(cus_df)
     st.divider()
     st.write(":red[Generated SQL Query :] "+cusSql+";")
