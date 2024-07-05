@@ -1132,7 +1132,7 @@ else:#
         with col6:
             cusChartParamSelected = st.selectbox(":rainbow[Select Parameter]",("State","Year","Quarter","District","Transaction_type","Brands"),placeholder="Select Your Query Here ...",)
         with col7:
-            cusChartColourSelected = st.selectbox(":rainbow[Select Chart Colour]",(cusColumnSelected,"State","District"),placeholder="Select Your Query Here ...",)
+            cusChartColourSelected = st.selectbox(":rainbow[Select Chart Colour]",(cusColumnSelected,"State","Year","Quarter","District","Transaction_type","Brands"),placeholder="Select Your Query Here ...",)
         with col8:
             cusChartTypeSelected = st.selectbox(":rainbow[Select Chart Type]",("BarChart","PieChart","DonutChart","FunnelChart","LineChart","ScatterChart","BoxChart","Density_Heatmap"),placeholder="Select Your Query Here ...",)
            
